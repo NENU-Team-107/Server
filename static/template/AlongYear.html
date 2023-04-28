@@ -212,6 +212,18 @@
                         .setHTML(`<span>${e.feature.properties.name}</span>`);
                     scene.addPopup(popup);
                 });
+                pointLayer.on('click', e => {
+                    if (e.feature.properties.happiness === undefined) {
+                        return;
+                    }
+                    const popup = new L7.Popup({
+                        offsets: [0, 0],
+                        closeButton: false,
+                        closeOnEsc: true
+                    }).setLnglat(e.lngLat)
+                        .setHTML(`<span>${e.feature.properties.happiness}</span>`);
+                    scene.addPopup(popup);
+                });
             });
     });
 </script>
