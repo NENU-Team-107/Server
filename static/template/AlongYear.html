@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://unpkg.com/@antv/l7'></script>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <title>Along Years</title>
+</head>
+<style>
+    .year{
+      position: absolute;
+      z-index: 9999;
+    }
+    select{
+      appearance: none;
+     -webkit-appearance: none;
+     border:0;
+     outline: none;
+    }
+    .iselect-body {
+      width: 110px;
+      height: 48px;
+      background: #252525;
+      border-radius: 1px;
+      border: 2px solid #3F4142;
+    }
+    .ifrom-select {
+      width: 78px;
+      height: 48px;
+      line-height: 48px;
+      margin: 0 18px;
+      background-color: #FFFFFF00;
+      font-size: 22px;
+      font-weight: 400;
+      color: #979797;
+    }
+    .ifrom-select-background {
+      background: url("static/img/tri.png")no-repeat scroll right center transparent;
+      background-size: 15px 15px;
+    }
+  </style>
+<body>
+    <div class="year">
+        <lable>choose year</lable>
+         <div class="iselect-body">
+            <select class="ifrom-select ifrom-select-background" id="yearSelect" onchange="yearChange()" d="{{year}}">
+          <option value="">2005</option>
+          <option value="">2006</option>
+          <option value="">2007</option>
+          <option value="">2008</option>
+          <option value="">2009</option>
+          <option value="">2010</option>
+          <option value="">2011</option>
+          <option value="">2012</option>
+          <option value="">2013</option>
+          <option value="">2014</option>
+          <option value="">2015</option>
+          <option value="">2016</option>
+          <option value="">2017</option>
+          <option value="">2018</option>
+          <option value="">2019</option>
+          <option value="">2020</option>
+          <option value="">2021</option>
+          <option value="">2022</option>
+        </select>
+      </div>
+      </div>
+    <div id="map"></div>
+</body>
+<style>
+    html,
+    body,
+    #map {
+        height: 100%;
+        width: 100vw;
+        padding: 0;
+        margin: 0;
+    }
+</style>
+<script>
+    window.onload = function () {
+        var yearSelect = document.getElementById('yearSelect');
+        let idx = yearSelect.getAttribute('d');
+        yearSelect.options[idx].selected = true;
+    };
+    function yearChange() {
+        var yearSelect = document.getElementById('yearSelect');
+        var index = yearSelect.selectedIndex;
+        var selectedYear = yearSelect.options[index].text;
+        if(selectedYear === ' '){
+            selectedYear = '2005'
+        }
+        window.location.href = 'http://127.0.0.1:5000/map?' + `year=${selectedYear}`;
+    }
+
+    const scene = new L7.Scene({
+        id: 'map',
+        map: new L7.GaodeMap({
+            style: 'light', // 样式URL
+            center: [2.6125016864608597, 49.359131],
+            pitch: 30,
+            zoom: 4.1,
+            token: '44777c023d04078893270a8be6d5c9e0',
+        }),
+    });
+    scene.on('loaded', () => {
+var urln = location.search.split('=');
+        var selectYear = urln[1];
+        if (selectYear = ' ') {
+            selectYear = '2005';
+        }
+        console.log('static/assets/happiness' + `${selectYear}` + '.json');
+        $.when($.getJSON('static/assets/happiness' + `${selectYear}` + '.json'))
+            .done((data) => {
+                const pointLayer = new L7.PointLayer({})
+                    .source(data)
+                    .animate(true)
+                    .active(true)
+                    .shape('name', ['cylinder', 'triangleColumn', 'hexagonColumn', 'squareColumn'])
+                    .color('#006CFF')
+                    .size('happiness', h => [10, 10, Math.floor(h) * 20])
+                    .style({
+                        opacity: 0.8,
+                        sourceColor: 'red',
+                        targetColor: 'yellow',
+                        lightEnable: false
+
+                    });
+                const color = ['rgb(255,255,217)', 'rgb(237,248,177)', 'rgb(199,233,180)', 'rgb(127,205,187)', 'rgb(65,182,196)', 'rgb(29,145,192)'];
+                const polyLayer = new L7.PolygonLayer({})
+                    .source(data)
+                    .scale('happiness', {
+                        type: 'linear'
+                    })
+                    .color(
+                        'happiness', color
+                    )
+                    .shape('fill')
+                    .active(true);
+                const lineLayer = new L7.LineLayer({
+                    zIndex: 2
+                })
+                    .source(data)
+                    .color('#fff')
+                    .active(true)
+                    .size(1)
+                    .style({
+                        lineType: 'dash',
+                        dashArray: [2, 2],
+                    });
+                scene.addLayer(lineLayer);
+                scene.addLayer(polyLayer);
+                scene.addLayer(pointLayer);
+            });
+    })
+</script>
+
+</html>
