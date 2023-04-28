@@ -178,7 +178,10 @@
                         lightEnable: false
 
                     });
-                const color = ['rgb(255,255,217)', 'rgb(237,248,177)', 'rgb(199,233,180)', 'rgb(127,205,187)', 'rgb(65,182,196)', 'rgb(29,145,192)'];
+
+                const color = ['rgb(255,255,217)', 'rgb(237,248,177)', 'rgb(199,233,180)',
+                'rgb(127,205,187)', 'rgb(65,182,196)', 'rgb(29,145,192)'];
+
                 const polyLayer = new L7.PolygonLayer({})
                     .source(data)
                     .scale('happiness', {
@@ -188,7 +191,7 @@
                         'happiness', color
                     )
                     .shape('fill')
-                    .active(true);
+                    .active({color: 'red', mix: .6});
                 const lineLayer = new L7.LineLayer({
                     zIndex: 2
                 })
