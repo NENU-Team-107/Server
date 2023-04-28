@@ -8,42 +8,74 @@
     <script src='https://unpkg.com/@antv/l7'></script>
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
     <title>Along Years</title>
 </head>
 <style>
-    .year{
-      position: absolute;
-      z-index: 9999;
+    a{
+        position: absolute;
+        z-index: 999;
+        text-decoration-line: none;
     }
-    select{
-      appearance: none;
-     -webkit-appearance: none;
-     border:0;
-     outline: none;
+    a:hover{
+        text-decoration-line: none;
     }
-    .iselect-body {
-      width: 110px;
-      height: 48px;
-      background: #252525;
-      border-radius: 1px;
-      border: 2px solid #3F4142;
+    .year {
+        position: fixed;
+        z-index: 9999;
+        left: 5%;
+    }
+
+    select {
+        border: 0;
+        outline: none;
+    }
+    .iselect-body{
+        display: inline-block;
+        margin-top: 20px;
     }
     .ifrom-select {
-      width: 78px;
-      height: 48px;
-      line-height: 48px;
-      margin: 0 18px;
-      background-color: #FFFFFF00;
-      font-size: 22px;
-      font-weight: 400;
-      color: #979797;
+        margin: 0 2px;
+        background-color: #fff;
+        font-size: 18px;
+        font-weight: 400;
+        border: none;
+        padding-right: 2px;
     }
-    .ifrom-select-background {
-      background: url("static/img/tri.png")no-repeat scroll right center transparent;
-      background-size: 15px 15px;
+
+    .ifrom-select::before{
+        content: "";
+        background: url("/src/tri.png") cover left;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background-size: 50px 50px;
+        margin-right: 2px;
     }
-  </style>
+    #tip{
+        margin: 3px;
+        display: inline-block;
+        font-size:larger;
+        font-family: 'Times New Roman', Times, serif;
+        font-style: italic;
+    }
+    #al{
+        position: fixed;
+        top: 10%;
+        left: 5%;
+        font-weight:bolder;
+        font-size:larger;
+    }
+    #index{
+        top: 15%;
+        left: 5%;
+        position: fixed;
+        font-weight:bolder;
+        font-size:larger;
+    }
+</style>
 <body>
     <div class="year">
         <lable>choose year</lable>
@@ -70,6 +102,12 @@
         </select>
       </div>
       </div>
+    <div>
+        <a href="http://localhost:8080/GDP" class="glyphicon glyphicon-forward" role="button" id="al">GDP</a>
+    </div>
+    <div>
+        <a href="http://localhost:8080" class="glyphicon glyphicon-forward" role="button" id="index">INDEX</a>
+    </div>
     <div id="map"></div>
 </body>
 <style>
@@ -83,39 +121,48 @@
     }
 </style>
 <script>
+
     window.onload = function () {
         var yearSelect = document.getElementById('yearSelect');
         let idx = yearSelect.getAttribute('d');
-        yearSelect.options[idx].selected = true;
+        if(idx === undefined){
+            idx = 2005
+        }
+        yearSelect.options[idx - 2005].selected = true;
     };
+
     function yearChange() {
         var yearSelect = document.getElementById('yearSelect');
         var index = yearSelect.selectedIndex;
+        yearSelect.options[index].selected = true;
         var selectedYear = yearSelect.options[index].text;
-        if(selectedYear === ' '){
-            selectedYear = '2005'
+        console.log(selectedYear);
+        if (selectedYear === ' ') {
+            selectedYear = 2005;
         }
-        window.location.href = 'http://127.0.0.1:5000/map?' + `year=${selectedYear}`;
+        window.location.href = 'http://127.0.0.1:8080/AlongYear?' + `year=${selectedYear}`;
     }
 
     const scene = new L7.Scene({
-        id: 'map',
-        map: new L7.GaodeMap({
-            style: 'light', // 样式URL
-            center: [2.6125016864608597, 49.359131],
-            pitch: 30,
-            zoom: 4.1,
-            token: '44777c023d04078893270a8be6d5c9e0',
-        }),
-    });
+            id: 'map',
+            map: new L7.GaodeMap({
+                style: 'light', // 样式URL
+                center: [2.6125016864608597, 49.359131],
+                pitch: 30,
+                zoom: 4.1,
+                token: '44777c023d04078893270a8be6d5c9e0',
+            }),
+        });
+
     scene.on('loaded', () => {
-var urln = location.search.split('=');
+        var urln = location.search.split('=');
+        console.log(urln);
         var selectYear = urln[1];
-        if (selectYear = ' ') {
-            selectYear = '2005';
+        if(selectYear === ' ' || selectYear === undefined){
+            selectYear = '2005'
         }
-        console.log('static/assets/happiness' + `${selectYear}` + '.json');
-        $.when($.getJSON('static/assets/happiness' + `${selectYear}` + '.json'))
+        console.log('static/assets/happiness' + selectYear + '.json');
+        $.when($.getJSON('static/assets/happiness' + selectYear + '.json'))
             .done((data) => {
                 const pointLayer = new L7.PointLayer({})
                     .source(data)
@@ -123,10 +170,10 @@ var urln = location.search.split('=');
                     .active(true)
                     .shape('name', ['cylinder', 'triangleColumn', 'hexagonColumn', 'squareColumn'])
                     .color('#006CFF')
-                    .size('happiness', h => [10, 10, Math.floor(h) * 20])
+                    .size('happiness', h => [6, 6, Math.floor(h) * 10])
                     .style({
                         opacity: 0.8,
-                        sourceColor: 'red',
+                        sourceColor: 'blue',
                         targetColor: 'yellow',
                         lightEnable: false
 
@@ -156,8 +203,17 @@ var urln = location.search.split('=');
                 scene.addLayer(lineLayer);
                 scene.addLayer(polyLayer);
                 scene.addLayer(pointLayer);
+                polyLayer.on('mousemove', e => {
+                    const popup = new L7.Popup({
+                        offsets: [0, 0],
+                        closeButton: false,
+                        closeOnEsc: true
+                    }).setLnglat(e.lngLat)
+                        .setHTML(`<span>${e.feature.properties.name}</span>`);
+                    scene.addPopup(popup);
+                });
             });
-    })
+    });
 </script>
 
 </html>

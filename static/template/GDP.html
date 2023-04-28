@@ -12,14 +12,49 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol3-echarts/dist/ol3Echarts.js"></script>
 <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+    a{
+        position: absolute;
+        z-index: 999;
+        text-decoration-line: none;
+    }
+    a:hover{
+        text-decoration-line: none;
+        color: black;
+    }
+    #al{
+        position: fixed;
+        top: 3%;
+        right:32%;
+        font-weight:bolder;
+        font-size:larger;
+        color: rgb(113, 108, 108);
+    }
+    #index{
+        position: fixed;
+        top: 3%;
+        right:25%;
+        font-weight:bolder;
+        font-size:larger;
+        color: rgb(111, 109, 109);
+    }
+</style>
 
 <body>
+<div>
+    <a href="http://localhost:8080/AlongYear"  class="glyphicon glyphicon-forward" id="al">HAPPY</a>
+    </div>
+    <div>
+        <a href="http://localhost:8080/" class="glyphicon glyphicon-forward" id="index">INDEX</a>
+    </div>
     <div id="gdp"></div>
 </body>
 <script>
     $.when($.getJSON("static/assets/country.json"), $.getJSON("static/assets/gdp.json")).done(
         function (res0, res1) {
-            var chartDom = document.getElementById("gdp");
+                       var chartDom = document.getElementById("gdp");
             var myChart = echarts.init(chartDom);
             var option;
 
@@ -149,7 +184,7 @@
                         {
                             type: "text",
                             right: 160,
-                            bottom: 100,
+                            bottom: 150,
                             style: {
                                 text: startYear,
                                 font: "bolder 80px monospace",

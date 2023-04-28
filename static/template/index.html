@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="always" name="referrer">
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <title>乌托邦</title>
+    <style type="text/css">
+        body {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #ddd;
+            transition: 1s;
+        }
+
+        .title {
+            position: fixed;
+            bottom: 63%;
+            left: 1%;
+            text-align: center;
+            width: 100%;
+            color: #fff;
+        }
+
+        .nav {
+            overflow: hidden;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 420px;
+            width: 100%;
+        }
+
+        .navs {
+            width: 100px;
+            height: 840px;
+            left: 0;
+            transform-origin: 50% 50%;
+            transition: 1s;
+            transform: rotate(0deg);
+            z-index: 0;
+        }
+
+        .rotate {
+            animation: rotate1 20s linear infinite;
+        }
+
+        .navs li {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            margin-left: -50px;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            transform-origin: 50% 400px;
+            text-align: center;
+            border-radius: 5px;
+            transition: border-radius .3s, box-shadow 1s;
+            box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .navs li:hover {
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .navs li a:hover {
+            transform: scale(1.1);
+        }
+
+        .navs li a {
+            text-decoration: none;
+            color: #fff;
+            font-family: Microsoft YaHei;
+            font-size: 20px;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+        }
+
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        @keyframes rotate1 {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(180deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .head {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-weight: bold;
+            color: #fff;
+            font-size: 60px;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 550px
+        }
+
+        img {
+            margin-top: 30%;
+            margin-left: 78%;
+            width: 250px;
+            height: 250px;
+        }
+
+        .octicon {
+            vertical-align: middle;
+            vertical-align: text-bottom;
+            padding-right: 5px;
+            width: 22px;
+            height: 22px;
+        }
+        .para{
+            position: absolute;
+            top: 45%;
+            left: 40%;
+            color: floralwhite;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        .content{
+            margin-top: 10%;
+            font-size: 17px;
+        }
+        #b{
+            position: relative;
+            left: 20%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav" id="nav">
+        <ul class="navs" id="navs"></ul>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="head">“映像”乌托邦</div>
+    <p class="title">——通过GDP和国民幸福指数来追寻“乌托邦”</p>
+    <div class="para">
+        <div class="content" id="a">
+        只通过GDP无法展现出国家的全貌，
+       </div>
+       <div class="content" id="b">
+        我们将GDP和国民幸福指数进行可视化，
+       </div>
+       <div class="content" id="c">
+        给您展现国家的变化和国家之间的差异
+        </div>
+
+    </div>
+    <img src="static/img/city.png" alt="" srcset="">
+
+
+
+
+
+
+    <script type="text/javascript">
+        (function () {
+            function gc() {
+                return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+            }
+            var data = [['GDP', 'GDP', '#283c63'],
+            ['HAPPY', 'AlongYear', '#928a97'],
+            ['GDP', 'GDP', '#52616b'],
+            ['HAPPY', 'AlongYear', '#1e2022'],
+            ['GDP', 'GDP', '#00adb5'],
+            ['HAPPY', 'AlongYear', '#52616b']];
+            var max = 12;
+            if (data.length < max) { data = data.concat(data); }
+            var mode = '<li style="background:{{background}};transform:rotate({{rotate}}deg)" data-index={{index}}><a href="{{href}}">{{word}}</a></li>',
+                count = data.length,
+                angle = 360 / count,
+                navs = document.getElementById('navs');
+            navs.innerHTML = data.concat().map(function (x, i) {
+                return mode.replace(/{{href}}/g, x[1])
+                    .replace(/{{word}}/g, x[0])
+                    .replace(/{{background}}/g, x[2])
+                    .replace(/{{rotate}}/g, angle * i)
+                    .replace(/{{index}}/g, i);
+            }).join('');
+            var t = new Date();
+            var nowData = 0;
+            var nowAngle = 0;
+            function scrollFun(event) {
+                var t2 = new Date();
+                if (t2 - t < 600) {
+                    return false;
+                } else {
+                    t = t2;
+                }
+                var e = event || window.event;
+                var delta = arguments.length > 0 ? (e.wheelDelta || -e.detail) : 1;
+                var d = delta > 0 ? 1 : -1;
+                nowData += -d;
+                nowData = nowData > max - 1 ? nowData % max : nowData < 0 ? nowData + max : nowData;
+                nowAngle += angle * d;
+                navs.style.transform = 'rotate(' + nowAngle + 'deg)';
+                document.getElementsByTagName('body')[0].style.background = data[nowData][2];
+            }
+            var it = setInterval(scrollFun, 2000);
+            navs.onmouseenter = function () {
+
+                clearInterval(it);
+            };
+            navs.onmouseleave = function () {
+                it = setInterval(scrollFun, 2000);
+            };
+            if (document.addEventListener) {
+                document.addEventListener('DOMMouseScroll', scrollFun, false);
+            }
+            window.onmousewheel = document.onmousewheel = scrollFun;
+        })();
+    </script>
+</body>
+
+</html>
